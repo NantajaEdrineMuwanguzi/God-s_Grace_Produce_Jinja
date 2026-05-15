@@ -1,0 +1,1007 @@
+<?php
+session_start();
+include 'config/db.php';
+
+// CHECK LOGIN
+$isLoggedIn = false;
+$fullname = "";
+
+if(isset($_SESSION['user_id'])){
+
+    $isLoggedIn = true;
+    $fullname = $_SESSION['fullname'];
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>God's Grace Produce - Jinja</title>
+
+<!-- GOOGLE FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+/* HEADER */
+
+header{
+
+    background:#0f5132;
+
+    padding:15px 8%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
+}
+
+.logo{
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:700;
+}
+
+.header-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+}
+
+nav{
+
+    display:flex;
+
+    align-items:center;
+}
+
+nav a{
+
+    color:white;
+
+    text-decoration:none;
+
+    margin-left:20px;
+
+    transition:0.3s;
+
+    font-weight:500;
+}
+
+nav a:hover{
+
+    color:#ffc107;
+}
+
+.welcome-user{
+
+    color:#ffc107;
+
+    margin-left:20px;
+
+    font-weight:600;
+}
+
+.logo-image img{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid white;
+
+    background:white;
+}
+
+/* HERO */
+
+.hero{
+
+    height:85vh;
+
+    background:
+    linear-gradient(rgba(0,0,0,0.6),
+    rgba(0,0,0,0.6)),
+
+    url("http://localhost/god's%20grace%20produce%20jinja/uploads/hero.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    color:white;
+
+    padding:20px;
+}
+
+.hero h1{
+
+    font-size:55px;
+
+    margin-bottom:15px;
+}
+
+.hero p{
+
+    font-size:20px;
+
+    margin-bottom:25px;
+}
+
+.btn{
+
+    display:inline-block;
+
+    padding:12px 30px;
+
+    background:#ffc107;
+
+    color:white;
+
+    border-radius:30px;
+
+    text-decoration:none;
+
+    transition:0.3s;
+
+    font-weight:600;
+}
+
+.btn:hover{
+
+    background:#ff9800;
+}
+
+/* PRODUCTS */
+
+.featured-products{
+
+    padding:70px 8%;
+
+    background:white;
+}
+
+.featured-products h2{
+
+    text-align:center;
+
+    color:#0f5132;
+
+    font-size:40px;
+
+    margin-bottom:10px;
+}
+
+.product-container{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(270px,1fr));
+
+    gap:25px;
+
+    margin-top:40px;
+}
+
+.product-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+
+    transition:0.3s;
+}
+
+.product-card:hover{
+
+    transform:translateY(-5px);
+}
+
+.product-card img{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+}
+
+.product-info{
+
+    padding:20px;
+}
+
+.seller{
+
+    font-size:13px;
+
+    color:#198754;
+
+    margin-bottom:5px;
+}
+
+.product-info h3{
+
+    color:#0f5132;
+
+    margin-bottom:10px;
+}
+
+.price{
+
+    color:#ff9800;
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+    font-size:18px;
+}
+
+.description{
+
+    font-size:14px;
+
+    color:#666;
+
+    margin-bottom:15px;
+}
+
+.btn-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.btn1{
+
+    text-align:center;
+
+    padding:10px;
+
+    background:#0f5132;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:20px;
+
+    transition:0.3s;
+}
+
+.btn2{
+
+    text-align:center;
+
+    padding:10px;
+
+    background:#ffc107;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:20px;
+
+    transition:0.3s;
+}
+
+.btn1:hover{
+
+    background:#198754;
+}
+
+.btn2:hover{
+
+    background:#ff9800;
+}
+
+/* WHY CHOOSE US */
+
+.why-us{
+
+    padding:70px 8%;
+
+    background:#f8f9fa;
+
+    text-align:center;
+}
+
+.why-us h2{
+
+    color:#0f5132;
+
+    font-size:38px;
+
+    margin-bottom:40px;
+}
+
+.why-container{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+    gap:25px;
+}
+
+.why-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.why-card i{
+
+    font-size:45px;
+
+    color:#198754;
+
+    margin-bottom:15px;
+}
+
+.why-card h3{
+
+    color:#0f5132;
+
+    margin-bottom:10px;
+}
+
+/* TESTIMONIALS */
+
+.testimonials{
+
+    padding:70px 8%;
+
+    background:white;
+
+    text-align:center;
+}
+
+.testimonials h2{
+
+    color:#0f5132;
+
+    font-size:38px;
+
+    margin-bottom:40px;
+}
+
+.testimonial-container{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(280px,1fr));
+
+    gap:25px;
+}
+
+.testimonial-card{
+
+    background:#f8f9fa;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+
+    transition:0.3s;
+}
+
+.testimonial-card:hover{
+
+    transform:translateY(-5px);
+}
+
+.testimonial-card p{
+
+    color:#555;
+
+    margin-bottom:15px;
+
+    line-height:1.7;
+}
+
+.testimonial-card h4{
+
+    color:#198754;
+}
+
+.stars{
+
+    color:#ffc107;
+
+    font-size:18px;
+
+    margin-bottom:10px;
+}
+
+/* CONTACT */
+
+.contact-section{
+
+    padding:70px 8%;
+
+    background:#0f5132;
+
+    color:white;
+
+    text-align:center;
+}
+
+.contact-section h2{
+
+    font-size:38px;
+
+    margin-bottom:40px;
+}
+
+.contact-container{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+    margin-bottom:40px;
+}
+
+.contact-box{
+
+    background:rgba(255,255,255,0.1);
+
+    padding:25px;
+
+    border-radius:15px;
+}
+
+.contact-box i{
+
+    font-size:40px;
+
+    margin-bottom:15px;
+
+    color:#ffc107;
+}
+
+.social-media{
+
+    margin-top:20px;
+}
+
+.social-media a{
+
+    display:inline-block;
+
+    margin:10px;
+
+    width:45px;
+
+    height:45px;
+
+    line-height:45px;
+
+    background:white;
+
+    color:#0f5132;
+
+    border-radius:50%;
+
+    text-align:center;
+
+    font-size:20px;
+
+    transition:0.3s;
+}
+
+.social-media a:hover{
+
+    background:#ffc107;
+
+    color:white;
+}
+
+footer{
+
+    background:#06341f;
+
+    text-align:center;
+
+    color:white;
+
+    padding:20px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    header{
+
+        flex-direction:column;
+
+        gap:15px;
+    }
+
+    .header-right{
+
+        flex-direction:column;
+    }
+
+    nav{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+    }
+
+    nav a{
+
+        margin:10px;
+    }
+
+    .hero h1{
+
+        font-size:38px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+    <div class="logo">
+
+        God's Grace Produce
+
+    </div>
+
+    <div class="header-right">
+
+        <nav>
+
+            <a href="index.php">Home</a>
+
+            <a href="shop.php">Shop</a>
+
+            <a href="cart.php">
+
+                <i class="fas fa-shopping-cart"></i>
+
+                Cart
+
+            </a>
+
+            <?php if($isLoggedIn){ ?>
+
+                <a href="customer_dashboard.php">
+
+                    <i class="fas fa-user"></i>
+
+                    Dashboard
+
+                </a>
+
+                <a href="logout.php">
+
+                    <i class="fas fa-sign-out-alt"></i>
+
+                    Logout
+
+                </a>
+
+                <span class="welcome-user">
+
+                    Hi, <?php echo $fullname; ?>
+
+                </span>
+
+            <?php } else { ?>
+
+                <a href="login.php">
+
+                    <i class="fas fa-sign-in-alt"></i>
+
+                    Login
+
+                </a>
+
+                <a href="register.php">
+
+                    <i class="fas fa-user-plus"></i>
+
+                    Register
+
+                </a>
+
+            <?php } ?>
+
+        </nav>
+
+        <div class="logo-image">
+
+            <img src="uploads/logo.png" alt="Logo">
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div>
+
+        <h1>
+
+            Fresh Produce From Jinja
+
+        </h1>
+
+        <p>
+
+            Buy directly from trusted farmers
+            across Uganda
+
+        </p>
+
+        <a href="shop.php"
+        class="btn">
+
+            Start Shopping
+
+        </a>
+
+    </div>
+
+</section>
+
+<!-- PRODUCTS -->
+
+<section class="featured-products">
+
+    <h2>Featured Products</h2>
+
+    <div class="product-container">
+
+        <?php
+
+        $query = mysqli_query($conn,
+
+        "SELECT * FROM products
+        ORDER BY id DESC LIMIT 6");
+
+        while($row = mysqli_fetch_assoc($query)){
+        ?>
+
+        <div class="product-card">
+
+            <img src="uploads/<?php echo $row['image']; ?>">
+
+            <div class="product-info">
+
+                <div class="seller">
+
+                    <i class="fas fa-store"></i>
+
+                    <?php echo $row['seller_name']; ?>
+
+                </div>
+
+                <h3>
+
+                    <?php echo $row['name']; ?>
+
+                </h3>
+
+                <div class="price">
+
+                    UGX
+                    <?php echo number_format($row['price']); ?>
+
+                </div>
+
+                <p class="description">
+
+                    <?php
+                    echo substr(
+                    $row['description'],0,70);
+                    ?>...
+
+                </p>
+
+                <div class="btn-group">
+
+                    <a class="btn1"
+                    href="product_details.php?id=<?php echo $row['id']; ?>">
+
+                        View Details
+
+                    </a>
+
+                    <a class="btn2"
+                    href="add_to_cart.php?id=<?php echo $row['id']; ?>">
+
+                        Add To Cart
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <?php } ?>
+
+    </div>
+
+</section>
+
+<!-- WHY CHOOSE US -->
+
+<section class="why-us">
+
+    <h2>Why Choose Us</h2>
+
+    <div class="why-container">
+
+        <div class="why-card">
+
+            <i class="fas fa-seedling"></i>
+
+            <h3>Fresh From Farmers</h3>
+
+            <p>
+                We connect customers directly to trusted farmers
+                in Uganda.
+            </p>
+
+        </div>
+
+        <div class="why-card">
+
+            <i class="fas fa-truck"></i>
+
+            <h3>Fast Delivery</h3>
+
+            <p>
+                Enjoy quick and reliable delivery
+                services for your produce.
+            </p>
+
+        </div>
+
+        <div class="why-card">
+
+            <i class="fas fa-handshake"></i>
+
+            <h3>Trusted Marketplace</h3>
+
+            <p>
+                Safe and reliable platform
+                for buyers and sellers.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- DYNAMIC TESTIMONIALS -->
+
+<section class="testimonials">
+
+    <h2>
+
+        Customer Testimonials
+
+    </h2>
+
+    <div class="testimonial-container">
+
+        <?php
+
+        $testimonial_query = mysqli_query($conn,
+
+        "SELECT * FROM reviews
+        ORDER BY id DESC
+        LIMIT 6");
+
+        if(mysqli_num_rows($testimonial_query) > 0){
+
+            while($testimonial =
+            mysqli_fetch_assoc($testimonial_query)){
+        ?>
+
+        <div class="testimonial-card">
+
+            <div class="stars">
+
+                <?php
+
+                for($i = 1; $i <=
+                $testimonial['rating']; $i++){
+
+                    echo "⭐";
+                }
+
+                ?>
+
+            </div>
+
+            <p>
+
+                "<?php
+                echo $testimonial['review'];
+                ?>"
+
+            </p>
+
+            <h4>
+
+                - <?php
+                echo $testimonial['customer_name'];
+                ?>
+
+            </h4>
+
+        </div>
+
+        <?php
+            }
+        } else {
+        ?>
+
+        <div class="testimonial-card">
+
+            <p>
+
+                No testimonials available yet.
+
+            </p>
+
+            <h4>
+
+                Be the first customer
+                to leave a review.
+
+            </h4>
+
+        </div>
+
+        <?php } ?>
+
+    </div>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="contact-section">
+
+    <h2>Contact Us</h2>
+
+    <div class="contact-container">
+
+        <div class="contact-box">
+
+            <i class="fas fa-map-marker-alt"></i>
+
+            <h3>Location</h3>
+
+            <p>Jinja, Uganda</p>
+
+        </div>
+
+        <div class="contact-box">
+
+            <i class="fas fa-phone"></i>
+
+            <h3>Phone</h3>
+
+            <p>+256 769320868</p>
+
+        </div>
+
+        <div class="contact-box">
+
+            <i class="fas fa-envelope"></i>
+
+            <h3>Email</h3>
+
+            <p>info@godsgraceproduce.com</p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+    © <?php echo date("Y"); ?>
+
+    God's Grace Produce - Jinja
+
+</footer>
+
+</body>
+</html>
