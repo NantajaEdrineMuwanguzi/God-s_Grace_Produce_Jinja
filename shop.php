@@ -3,373 +3,410 @@ session_start();
 include 'config/db.php';
 
 /*
-==================================
-ONLY SELLERS CAN ACCESS
-==================================
+=================================================
+THIS SHOP PAGE:
+- Displays products uploaded by sellers/admins
+- Shows product image
+- Shows seller name
+- Buyers can see all uploaded items
+=================================================
 */
 
-if(!isset($_SESSION['user_id'])){
+// CHECK LOGIN
+$isLoggedIn = false;
 
-    header("Location: login.php");
-    exit();
-}
-
-if($_SESSION['role'] != "seller"){
-
-    header("Location: login.php");
-    exit();
+if(isset($_SESSION['user_id'])){
+    $isLoggedIn = true;
+    $fullname = $_SESSION['fullname'];
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>Customer Orders</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins', sans-serif;
-}
-
-body{
-
-    background:
-    linear-gradient(rgba(0,0,0,0.6),
-    rgba(0,0,0,0.6)),
-
-    url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop');
-
-    background-size:cover;
-    background-position:center;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-
-    width:250px;
-
-    height:100vh;
-
-    background:#0f5132;
-
-    position:fixed;
-
-    left:0;
-    top:0;
-
-    padding-top:20px;
-}
-
-.sidebar h2{
-
-    color:white;
-
-    text-align:center;
-
-    margin-bottom:30px;
-}
-
-.sidebar a{
-
-    display:block;
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:15px 25px;
-
-    transition:0.3s;
-}
-
-.sidebar a:hover{
-
-    background:#198754;
-}
-
-/* MAIN */
-
-.main{
-
-    margin-left:250px;
-
-    padding:40px;
-}
-
-.title{
-
-    background:rgba(255,255,255,0.95);
-
-    padding:20px;
-
-    border-radius:15px;
-
-    margin-bottom:25px;
-}
-
-.title h1{
-
-    color:#0f5132;
-}
-
-/* TABLE */
-
-.table-container{
-
-    background:rgba(255,255,255,0.96);
-
-    border-radius:20px;
-
-    overflow:hidden;
-}
-
-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-}
-
-table th{
-
-    background:#0f5132;
-
-    color:white;
-
-    padding:15px;
-}
-
-table td{
-
-    padding:15px;
-
-    border-bottom:1px solid #ddd;
-}
-
-.status{
-
-    padding:6px 14px;
-
-    border-radius:20px;
-
-    color:white;
-
-    font-size:14px;
-}
-
-.pending{
-
-    background:#ffc107;
-}
-
-.completed{
-
-    background:#198754;
-}
-
-.cancelled{
-
-    background:#dc3545;
-}
-
-.empty{
-
-    text-align:center;
-
-    padding:40px;
-
-    color:#555;
-}
-
-</style>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Marketplace Shop | God's Grace Produce
+    </title>
+
+    <!-- GOOGLE FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins', sans-serif;
+        }
+
+        body{
+
+            background:
+            linear-gradient(rgba(0,0,0,0.6),
+            rgba(0,0,0,0.6)),
+
+            url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop');
+
+            background-size:cover;
+            background-position:center;
+            background-attachment:fixed;
+        }
+
+        /* HEADER */
+
+        header{
+            background:#0f5132;
+            padding:15px 8%;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            position:sticky;
+            top:0;
+            z-index:1000;
+        }
+
+        .logo{
+            color:white;
+            font-size:28px;
+            font-weight:700;
+        }
+
+        nav a{
+            color:white;
+            text-decoration:none;
+            margin-left:25px;
+            font-weight:500;
+            transition:0.3s;
+        }
+
+        nav a:hover{
+            color:#ffc107;
+        }
+
+        .welcome-user{
+            color:#ffc107;
+            margin-left:20px;
+            font-weight:600;
+        }
+
+        /* PAGE TITLE */
+
+        .page-title{
+            text-align:center;
+            padding:60px 20px 30px;
+            color:white;
+        }
+
+        .page-title h1{
+            font-size:42px;
+            margin-bottom:10px;
+        }
+
+        .page-title p{
+            font-size:18px;
+        }
+
+        /* PRODUCTS */
+
+        .products{
+            padding:40px 8% 80px;
+
+            display:grid;
+
+            grid-template-columns:
+            repeat(auto-fit, minmax(300px,1fr));
+
+            gap:30px;
+        }
+
+        .card{
+            background:rgba(255,255,255,0.95);
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:0 5px 20px rgba(0,0,0,0.15);
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-10px);
+        }
+
+        .card img{
+            width:100%;
+            height:240px;
+            object-fit:cover;
+        }
+
+        .card-content{
+            padding:25px;
+        }
+
+        .seller{
+            color:#198754;
+            font-size:14px;
+            margin-bottom:10px;
+            font-weight:600;
+        }
+
+        .product-name{
+            font-size:24px;
+            color:#0f5132;
+            margin-bottom:15px;
+        }
+
+        .price{
+            color:#ff9800;
+            font-size:22px;
+            font-weight:700;
+            margin-bottom:15px;
+        }
+
+        .description{
+            color:#666;
+            line-height:1.7;
+            margin-bottom:20px;
+        }
+
+        .btn{
+            display:inline-block;
+            padding:12px 25px;
+            background:#0f5132;
+            color:white;
+            text-decoration:none;
+            border-radius:30px;
+            transition:0.3s;
+        }
+
+        .btn:hover{
+            background:#198754;
+        }
+
+        /* EMPTY MESSAGE */
+
+        .empty{
+            text-align:center;
+            padding:80px;
+            color:white;
+            font-size:20px;
+            grid-column:1/-1;
+        }
+
+        /* FOOTER */
+
+        footer{
+            background:#0f5132;
+            color:white;
+            text-align:center;
+            padding:20px;
+        }
+
+        @media(max-width:768px){
+
+            header{
+                flex-direction:column;
+            }
+
+            nav{
+                margin-top:15px;
+            }
+
+            nav a{
+                margin:0 10px;
+            }
+        }
+
+    </style>
 
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- HEADER -->
 
-<div class="sidebar">
+<header>
 
-    <h2>
-
-        <i class="fas fa-store"></i>
-
-        Seller Panel
-
-    </h2>
-
-    <a href="seller_dashboard.php">
-
-        Dashboard
-
-    </a>
-
-    <a href="add_product.php">
-
-        Add Product
-
-    </a>
-
-    <a href="manage_products.php">
-
-        Manage Products
-
-    </a>
-
-    <a href="seller_orders.php">
-
-        Orders
-
-    </a>
-
-    <a href="logout.php">
-
-        Logout
-
-    </a>
-
-</div>
-
-<!-- MAIN -->
-
-<div class="main">
-
-    <div class="title">
-
-        <h1>
-
-            <i class="fas fa-shopping-bag"></i>
-
-            Customer Orders
-
-        </h1>
-
+    <div class="logo">
+        God's Grace Produce
     </div>
 
-    <div class="table-container">
+    <nav>
+
+        <a href="index.php">Home</a>
+
+        <a href="shop.php">Shop</a>
+
+        <a href="cart.php">
+            <i class="fas fa-shopping-cart"></i>
+            Cart
+        </a>
+
+        <?php if($isLoggedIn){ ?>
+
+            <a href="customer_dashboard.php">
+                <i class="fas fa-user"></i>
+                Dashboard
+            </a>
+
+            <a href="logout.php">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+
+            <span class="welcome-user">
+                Hi, <?php echo $fullname; ?>
+            </span>
+
+        <?php } else { ?>
+
+            <a href="login.php">Login</a>
+
+            <a href="register.php">Register</a>
+
+        <?php } ?>
+
+    </nav>
+
+</header>
+
+<!-- PAGE TITLE -->
+
+<section class="page-title">
+
+    <h1>Marketplace Products</h1>
+
+    <p>
+        Browse fresh products uploaded by
+        farmers and sellers across Uganda.
+    </p>
+
+</section>
+
+<!-- PRODUCTS -->
+
+<section class="products">
 
 <?php
 
 $query = mysqli_query($conn,
-
-"SELECT * FROM orders
-ORDER BY id DESC");
+"SELECT * FROM products ORDER BY id DESC");
 
 if(mysqli_num_rows($query) > 0){
 
-?>
-
-<table>
-
-<tr>
-
-    <th>ID</th>
-
-    <th>Customer</th>
-
-    <th>Product</th>
-
-    <th>Price</th>
-
-    <th>Quantity</th>
-
-    <th>Total</th>
-
-    <th>Status</th>
-
-    <th>Date</th>
-
-</tr>
-
-<?php
-
-while($row = mysqli_fetch_assoc($query)){
-
-$status = strtolower($row['status']);
+    while($row = mysqli_fetch_assoc($query)){
 
 ?>
 
-<tr>
+<div class="card">
 
-    <td>
-        <?php echo $row['id']; ?>
-    </td>
+    <!-- PRODUCT IMAGE -->
 
-    <td>
-        <?php echo $row['customer_name']; ?>
-    </td>
+    <?php
+    if(!empty($row['image'])){
+    ?>
 
-    <td>
-        <?php echo $row['product_name']; ?>
-    </td>
+    <img src="uploads/<?php echo $row['image']; ?>">
 
-    <td>
-        UGX <?php echo number_format($row['price']); ?>
-    </td>
+    <?php
+    } else {
+    ?>
 
-    <td>
-        <?php echo $row['quantity']; ?>
-    </td>
+    <img src="https://images.unsplash.com/photo-1518843875459-f738682238a6?q=80&w=1974&auto=format&fit=crop">
 
-    <td>
-        UGX <?php echo number_format($row['total']); ?>
-    </td>
+    <?php } ?>
 
-    <td>
+    <div class="card-content">
 
-        <span class="status <?php
-        echo $status;
-        ?>">
+        <!-- SELLER -->
 
-            <?php echo $row['status']; ?>
+        <div class="seller">
 
-        </span>
+            <i class="fas fa-store"></i>
 
-    </td>
+            Seller:
+            <?php echo $row['seller_name']; ?>
 
-    <td>
-        <?php echo $row['created_at']; ?>
-    </td>
+        </div>
 
-</tr>
+        <!-- PRODUCT NAME -->
 
-<?php } ?>
+        <h3 class="product-name">
 
-</table>
+            <?php echo $row['name']; ?>
+
+        </h3>
+
+        <!-- PRICE -->
+
+        <div class="price">
+
+            UGX
+            <?php echo number_format($row['price']); ?>
+
+        </div>
+
+        <!-- DESCRIPTION -->
+
+        <p class="description">
+
+            <?php echo $row['description']; ?>
+
+        </p>
+
+        <!-- BUTTON -->
+
+        <a href="add_to_cart.php?id=<?php echo $row['id']; ?>"
+        class="btn">
+
+            <i class="fas fa-cart-shopping"></i>
+
+            Add To Cart
+
+        </a>
+
+    </div>
+
+</div>
 
 <?php
 
-}else{
+    }
+
+} else {
 
     echo "
     <div class='empty'>
 
-        No customer orders found.
+        No products uploaded yet.
 
     </div>";
 }
 
 ?>
 
-    </div>
+</section>
 
-</div>
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+
+        © <?php echo date("Y"); ?>
+
+        God's Grace Produce - Jinja
+
+    </p>
+
+</footer>
 
 </body>
 </html>

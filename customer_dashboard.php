@@ -1,12 +1,9 @@
-```php
 <?php
 session_start();
 include 'config/db.php';
 
 /*
-====================================
 CHECK LOGIN
-====================================
 */
 
 if(!isset($_SESSION['user_id'])){
@@ -16,9 +13,7 @@ if(!isset($_SESSION['user_id'])){
 }
 
 /*
-====================================
 ONLY CUSTOMERS
-====================================
 */
 
 if($_SESSION['role'] != "customer"){
@@ -28,9 +23,7 @@ if($_SESSION['role'] != "customer"){
 }
 
 /*
-====================================
 USER DATA
-====================================
 */
 
 $fullname = $_SESSION['fullname'];
@@ -39,9 +32,7 @@ $success = "";
 $error = "";
 
 /*
-====================================
 SUBMIT REVIEW / TESTIMONIAL
-====================================
 */
 
 if(isset($_POST['submit_review'])){
@@ -53,10 +44,8 @@ if(isset($_POST['submit_review'])){
     );
 
     /*
-    ====================================
     GET SELLER NAME
     FROM PRODUCTS TABLE
-    ====================================
     */
 
     $seller_query = mysqli_query($conn,
@@ -72,9 +61,7 @@ if(isset($_POST['submit_review'])){
     $seller_data['seller_name'];
 
     /*
-    ====================================
     INSERT REVIEW
-    ====================================
     */
 
     $insert = mysqli_query($conn,
@@ -721,4 +708,4 @@ body{
 
 </body>
 </html>
-```
+
