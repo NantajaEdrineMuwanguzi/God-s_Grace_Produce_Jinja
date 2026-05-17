@@ -140,8 +140,7 @@ body{
     background:
     linear-gradient(rgba(0,0,0,0.6),
     rgba(0,0,0,0.6)),
-
-   url("http://localhost/god's%20grace%20produce%20jinja/uploads/hero.jpg");
+    url("http://localhost/god%27s%20grace%20produce%20jinja/uploads/hero.jpg");
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
@@ -618,13 +617,19 @@ body{
                 and shopping experience.
             </p>
 
+            <a href="#testimonial-section">
+
+                Write Testimonial
+
+            </a>
+
         </div>
 
     </div>
 
     <!-- REVIEW FORM -->
 
-    <div class="review-box">
+    <div class="review-box" id="testimonial-section">
 
         <h2>
 
@@ -720,4 +725,3 @@ body{
 
 </body>
 </html>
-```
